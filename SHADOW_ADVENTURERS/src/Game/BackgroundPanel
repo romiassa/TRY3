@@ -1,0 +1,21 @@
+package Game;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class BackgroundPanel extends JPanel {
+    private Image backgroundImage;
+
+    // Constructor that accepts the path to the image
+    public BackgroundPanel(String imagePath) {
+        // Load the image using the provided path
+        this.backgroundImage = new ImageIcon(imagePath).getImage();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Draw the image to fill the panel
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+    }
+}

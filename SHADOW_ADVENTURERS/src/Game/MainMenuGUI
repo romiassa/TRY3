@@ -1,0 +1,143 @@
+package Game;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MainMenuGUI extends JFrame {
+    private static CharacterManager characterManager = new CharacterManager();
+    private static MenuManager menuManager = new MenuManager();
+    private static GameHistory gameHistory = new GameHistory();
+    private static GameStatistics gameStatistics = new GameStatistics();
+
+    public MainMenuGUI() {
+        setTitle("Jeu de Combat");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(6, 1));
+
+        // Titre
+        JLabel titleLabel = new JLabel("BIENVENUE DANS LE JEU DE COMBAT", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        add(titleLabel);
+
+        // Boutons
+        JButton playButton = new JButton("Jouer");
+        JButton rulesButton = new JButton("Afficher les règles");
+        JButton historyButton = new JButton("Afficher l'historique");
+        JButton statsButton = new JButton("Afficher les statistiques");
+        JButton exitButton = new JButton("Quitter");
+
+        add(playButton);
+        add(rulesButton);
+        add(historyButton);
+        add(statsButton);
+        add(exitButton);
+
+        // Action listeners
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Play.main(new String[0]);  // Appel de la classe Play
+            }
+        });
+
+        rulesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuManager.afficherRegles();
+            }
+        });
+
+        historyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameHistory.startStory();
+            }
+        });
+
+        statsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameStatistics.displayStatistics();
+            }
+        });
+
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enregistrerDonnees();
+                enregistrerHistorique();
+                enregistrerStatistiques();
+                System.out.println("Au revoir !");
+                System.exit(0);
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        chargerDonnees();
+        chargerHistorique();
+        chargerStatistiques();
+        SwingUtilities.invokeLater(() -> {
+            MainMenuGUI mainMenu = new MainMenuGUI();
+            mainMenu.setVisible(true);
+        });
+    }
+
+    public static void enregistrerDonnees() {
+        try {
+            FileManager.sauvegarder("personnages.dat", characterManager);
+            System.out.println("Données enregistrées avec succès !");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'enregistrement des données : " + e.getMessage());
+        }
+    }
+
+    public static void chargerDonnees() {
+        try {
+            characterManager = (CharacterManager) FileManager.charger("personnages.dat");
+            System.out.println("Données chargées avec succès !");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Erreur lors du chargement des données : " + e.getMessage());
+        }
+    }
+
+    public static void enregistrerHistorique() {
+        try {
+            FileManager.sauvegarder("historique.dat", gameHistory);
+            System.out.println("Historique enregistré avec succès !");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'enregistrement de l'historique : " + e.getMessage());
+        }
+    }
+
+    public static void chargerHistorique() {
+        try {
+            gameHistory = (GameHistory) FileManager.charger("historique.dat");
+            System.out.println("Historique chargé avec succès !");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Erreur lors du chargement de l'historique : " + e.getMessage());
+        }
+    }
+
+    public static void enregistrerStatistiques() {
+        try {
+            FileManager.sauvegarder("statistiques.dat", gameStatistics);
+            System.out.println("Statistiques enregistrées avec succès !");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'enregistrement des statistiques : " + e.getMessage());
+        }
+    }
+
+    public static void chargerStatistiques() {
+        try {
+            gameStatistics = (GameStatistics) FileManager.charger("statistiques.dat");
+            System.out.println("Statistiques chargées avec succès !");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Erreur lors du chargement des statistiques : " + e.getMessage());
+        }
+    }
+}
